@@ -18,6 +18,19 @@ const barlowCondensed = Barlow_Condensed({
 export const metadata: Metadata = {
   title: "EuroDaguer — Catálogo de Motores",
   description: "Amplio stock de motores para autos y camionetas. Todos verificados, con garantía de procedencia.",
+  openGraph: {
+    title: "EuroDaguer — Catálogo de Motores",
+    description: "Amplio stock de motores para autos y camionetas. Todos verificados, con garantía de procedencia.",
+    url: "https://eurodaguer.com",
+    siteName: "EuroDaguer",
+    locale: "es_CL",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "EuroDaguer — Catálogo de Motores",
+    description: "Amplio stock de motores verificados.",
+  },
 };
 
 export default function RootLayout({
@@ -33,7 +46,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <footer>
-          © 2026 MotorStock — Todos los derechos reservados
+          © 2026 EuroDaguer — Todos los derechos reservados
         </footer>
       </body>
     </html>

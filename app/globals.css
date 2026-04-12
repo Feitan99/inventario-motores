@@ -255,7 +255,7 @@ nav{
 }
 .badge-disponible{background:rgba(39,168,74,.2);color:#4cd47a;border:1px solid rgba(39,168,74,.3);}
 .badge-reservado{background:rgba(212,160,31,.2);color:#f0c040;border:1px solid rgba(212,160,31,.3);}
-.badge-vendido{background:rgba(100,100,100,.2);color:#888;border:1px solid rgba(100,100,100,.3);}
+.badge-vendido{background:rgba(232,69,69,.2);color:#e84545;border:1px solid rgba(232,69,69,.3);}
 .card-tipo{
   position:absolute;top:10px;right:10px;
   font-size:.62rem;font-weight:600;letter-spacing:.08em;

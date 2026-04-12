@@ -4,7 +4,7 @@ export default function Navbar() {
   return (
     <nav>
       <a href="/" className="logo">
-        <span className="logo-dot"></span>EuroDaguer
+        <span className="logo-dot"></span><span style={{ color: '#ffffff' }}>Euro</span><span style={{ color: 'var(--accent)' }}>Daguer</span>
       </a>
       <div className="nav-right">
         <a href="/#catalogo" className="nav-link">
