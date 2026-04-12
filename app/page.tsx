@@ -1,65 +1,174 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useMemo, useEffect } from "react";
+import { Motor } from "../data/motors";
+import { supabase } from "../lib/supabase";
+import Hero from "../components/Hero";
+import Sidebar from "../components/Sidebar";
+import MotorGrid from "../components/MotorGrid";
+import MotorModal from "../components/MotorModal";
+import Location from "../components/Location";
+
+export default function Catalog() {
+  const [motores, setMotores] = useState<Motor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
+
+  const [query, setQuery] = useState("");
+  const [tipoFiltro, setTipoFiltro] = useState("todos");
+  const [estadoFiltro, setEstadoFiltro] = useState("todos");
+  const [marcaFiltro, setMarcaFiltro] = useState("todos");
+  const [sortOrder, setSortOrder] = useState("default");
+  
+  const [modalMotor, setModalMotor] = useState<Motor | null>(null);
+
+  const loadMotores = async () => {
+    setLoading(true);
+    setFetchError(false);
+    const { data, error } = await supabase
+      .from('motores')
+      .select(`
+        id,
+        numero_serie,
+        tipo_combustible,
+        anio,
+        estado,
+        ubicacion,
+        costo_compra,
+        precio_venta,
+        observaciones,
+        marcas ( nombre ),
+        modelos ( nombre ),
+        motor_fotos ( storage_path )
+      `);
+
+    if (error) {
+      console.error("Error cargando motores:", error);
+      setFetchError(true);
+    } else if (data) {
+        const mappedData: Motor[] = data.map((m: any) => ({
+          id: m.id,
+          nro_serie: m.numero_serie,
+          marca: m.marcas?.nombre || 'Desconocida',
+          modelo: m.modelos?.nombre || 'Desconocido',
+          tipo: m.tipo_combustible,
+          anio: m.anio,
+          estado: m.estado === 'disponible' ? 'Disponible' : m.estado === 'reservado' ? 'Reservado' : 'Vendido',
+          ubicacion: m.ubicacion || 'Sin ubicación',
+          costo: m.costo_compra,
+          precio: m.precio_venta,
+          observaciones: m.observaciones || '',
+          fotos: m.motor_fotos ? m.motor_fotos.map((f: any) => {
+            if (f.storage_path && f.storage_path.startsWith('http')) {
+              return f.storage_path;
+            }
+            const { data: { publicUrl } } = supabase.storage.from('fotos-motores').getPublicUrl(f.storage_path);
+            return publicUrl;
+          }) : []
+        }));
+        setMotores(mappedData);
+      }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadMotores();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const marcasValidas = useMemo(() => {
+    return Array.from(new Set(motores.map((m) => m.marca))).sort();
+  }, [motores]);
+
+  const clearFilters = () => {
+    setQuery("");
+    setTipoFiltro("todos");
+    setEstadoFiltro("todos");
+    setMarcaFiltro("todos");
+    setSortOrder("default");
+  };
+
+  const filteredMotors = useMemo(() => {
+    const list = motores.filter((m) => {
+      if (tipoFiltro !== "todos" && m.tipo !== tipoFiltro) return false;
+      if (estadoFiltro !== "todos" && m.estado !== estadoFiltro) return false;
+      if (marcaFiltro !== "todos" && m.marca !== marcaFiltro) return false;
+      if (query) {
+        const q = query.toLowerCase();
+        if (!`${m.marca} ${m.modelo} ${m.tipo}`.toLowerCase().includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (sortOrder === "precio-asc") list.sort((a, b) => a.precio - b.precio);
+    if (sortOrder === "precio-desc") list.sort((a, b) => b.precio - a.precio);
+    if (sortOrder === "anio-desc") list.sort((a, b) => b.anio - a.anio);
+    if (sortOrder === "anio-asc") list.sort((a, b) => a.anio - b.anio);
+
+    return list;
+  }, [motores, tipoFiltro, estadoFiltro, marcaFiltro, query, sortOrder]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <Hero motores={motores} />
+      <div className="mainLayout" id="catalogo">
+        <Sidebar 
+          query={query} setQuery={setQuery}
+          tipoFiltro={tipoFiltro} setTipoFiltro={setTipoFiltro}
+          estadoFiltro={estadoFiltro} setEstadoFiltro={setEstadoFiltro}
+          marcaFiltro={marcaFiltro} setMarcaFiltro={setMarcaFiltro}
+          marcasValidas={marcasValidas}
+          clearFilters={clearFilters}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+        {loading ? (
+          <div style={{ padding: '2rem', textAlign: 'center', width: '100%', color: 'var(--text-secondary)' }}>
+            Cargando inventario de motores...
+          </div>
+        ) : fetchError ? (
+          <div style={{
+            padding: '3rem 2rem',
+            textAlign: 'center',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1rem',
+          }}>
+            <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.4 }}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+              No se pudo cargar el inventario. Revisá tu conexión.
+            </p>
+            <button
+              onClick={loadMotores}
+              style={{
+                padding: '0.5rem 1.25rem',
+                background: 'var(--accent)',
+                color: 'white',
+                border: 'none',
+                borderRadius: 8,
+                cursor: 'pointer',
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                fontFamily: 'var(--font-barlow)',
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+              Reintentar
+            </button>
+          </div>
+        ) : (
+          <MotorGrid 
+            filteredMotors={filteredMotors}
+            sortOrder={sortOrder} setSortOrder={setSortOrder}
+            onOpenModal={setModalMotor}
+          />
+        )}
+      </div>
+      
+      <Location />
+
+      <MotorModal motor={modalMotor} onClose={() => setModalMotor(null)} />
+    </>
   );
 }
