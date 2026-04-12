@@ -48,14 +48,21 @@ export default function MotorModal({ motor, onClose }: MotorModalProps) {
       }}
     >
       <div className="modal">
-        <div className="modal-img" style={{ position: "relative" }}>
+        <div className="modal-img" style={{ position: "relative", overflow: "hidden" }}>
           {validFotos.length > 0 ? (
             <>
               <Image
                 src={validFotos[safeIdx]}
+                alt=""
+                fill
+                style={{ objectFit: "cover", filter: "blur(25px)", opacity: 0.5, transform: "scale(1.1)" }}
+                sizes="(max-width: 640px) 10vw, 100px"
+              />
+              <Image
+                src={validFotos[safeIdx]}
                 alt={`${motor.marca} ${motor.modelo}`}
                 fill
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "contain", zIndex: 1 }}
                 sizes="(max-width: 640px) 100vw, 640px"
               />
               {validFotos.length > 1 && (

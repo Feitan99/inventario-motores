@@ -50,7 +50,7 @@ export default function Sidebar({
       <div className="filter-group">
         <span className="filter-label">Tipo</span>
         <div className="chips">
-          {["todos", "Gasolina", "Diesel", "Eléctrico"].map((t) => (
+          {["todos", "Gasolina", "Diesel"].map((t) => (
             <span
               key={t}
               className={`chip ${tipoFiltro === t ? "on" : ""}`}

@@ -26,13 +26,22 @@ export default function MotorCard({ motor, index, onOpenModal }: MotorCardProps)
     >
       <div className="card-img">
         {validFotos.length > 0 ? (
-          <Image
-            src={validFotos[0]}
-            alt={`${motor.marca} ${motor.modelo}`}
-            fill
-            style={{ objectFit: "cover" }}
-            sizes="(max-width: 768px) 100vw, 300px"
-          />
+          <>
+            <Image
+              src={validFotos[0]}
+              alt=""
+              fill
+              style={{ objectFit: "cover", filter: "blur(20px)", opacity: 0.5, transform: "scale(1.1)" }}
+              sizes="(max-width: 768px) 10vw, 100px"
+            />
+            <Image
+              src={validFotos[0]}
+              alt={`${motor.marca} ${motor.modelo}`}
+              fill
+              style={{ objectFit: "contain", zIndex: 1 }}
+              sizes="(max-width: 768px) 100vw, 300px"
+            />
+          </>
         ) : (
           <div className="card-img-placeholder">
             <svg

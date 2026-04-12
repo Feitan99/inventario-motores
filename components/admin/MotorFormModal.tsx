@@ -17,7 +17,7 @@ type Props = {
   onSaved: () => void;
 };
 
-const TIPOS = ["Gasolina", "Diesel", "Eléctrico", "Híbrido"];
+const TIPOS = ["Gasolina", "Diesel"];
 const ESTADOS = [
   { value: "disponible", label: "Disponible" },
   { value: "reservado", label: "Reservado" },
