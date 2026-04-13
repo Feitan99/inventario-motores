@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
 import Navbar from "../components/Navbar";
 import "./globals.css";
+import { ThemeProvider } from "../components/ThemeProvider";
 
 const barlow = Barlow({
   variable: "--font-barlow",
@@ -39,15 +40,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body
         className={`${barlow.variable} ${barlowCondensed.variable} antialiased`}
       >
-        <Navbar />
-        {children}
-        <footer>
-          © 2026 EuroDaguer — Todos los derechos reservados
-        </footer>
+        <ThemeProvider attribute="data-theme" defaultTheme="dark">
+          <Navbar />
+          {children}
+          <footer>
+            © 2026 EuroDaguer — Todos los derechos reservados
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   );

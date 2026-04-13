@@ -1,10 +1,11 @@
 import { WA_NUMBER } from "../data/motors";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   return (
     <nav>
       <a href="/" className="logo">
-        <span className="logo-dot"></span><span style={{ color: '#ffffff' }}>Euro</span><span style={{ color: 'var(--accent)' }}>Daguer</span>
+        <span className="logo-dot"></span><span style={{ color: 'var(--text)' }}>Euro</span><span style={{ color: 'var(--accent)' }}>Daguer</span>
       </a>
       <div className="nav-right">
         <a href="/#catalogo" className="nav-link">
@@ -16,6 +17,7 @@ export default function Navbar() {
         <a href="/" className="nav-link">
           Nosotros
         </a>
+        <ThemeToggle />
         <a
           href={`https://wa.me/${WA_NUMBER}`}
           className="nav-cta"
