@@ -41,6 +41,15 @@ export default function MotorFormModal({ motor, marcas, modelos, onClose, onSave
   const [costo, setCosto] = useState(motor ? String(motor.costo_compra) : "");
   const [precio, setPrecio] = useState(motor ? String(motor.precio_venta) : "");
   const [obs, setObs] = useState(motor?.observaciones || "");
+  const [numeroCilindros, setNumeroCilindros] = useState(
+    motor && (motor as any).numero_cilindros != null ? String((motor as any).numero_cilindros) : ""
+  );
+  const [numeroValvulas, setNumeroValvulas] = useState(
+    motor && (motor as any).numero_valvulas != null ? String((motor as any).numero_valvulas) : ""
+  );
+  const [rectificada, setRectificada] = useState<boolean | null>(
+    motor ? ((motor as any).rectificada ?? null) : null
+  );
 
   // Photos
   const [existingPhotos, setExistingPhotos] = useState<ExistingPhoto[]>([]);
@@ -172,6 +181,9 @@ export default function MotorFormModal({ motor, marcas, modelos, onClose, onSave
         observaciones: obs.trim(),
         marca_id: resolvedMarcaId,
         modelo_id: resolvedModeloId,
+        numero_cilindros: numeroCilindros ? parseInt(numeroCilindros) : null,
+        numero_valvulas: numeroValvulas ? parseInt(numeroValvulas) : null,
+        rectificada: rectificada,
       };
 
       let motorId: string;
@@ -275,7 +287,7 @@ export default function MotorFormModal({ motor, marcas, modelos, onClose, onSave
               fontSize: "1.4rem",
             }}
           >
-            {isEdit ? "Editar motor" : "Agregar motor"}
+            {isEdit ? "Editar culata" : "Agregar culata"}
           </h2>
           <button
             onClick={onClose}
@@ -436,6 +448,51 @@ export default function MotorFormModal({ motor, marcas, modelos, onClose, onSave
                 placeholder="Bodega A, estante 3..."
                 style={inputStyle}
               />
+            </div>
+          </div>
+
+          {/* Cilindros + Válvulas + Rectificada */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
+            <div style={fieldGroup}>
+              <label style={labelStyle}>N° Cilindros</label>
+              <select
+                value={numeroCilindros}
+                onChange={(e) => setNumeroCilindros(e.target.value)}
+                style={selectStyle}
+              >
+                <option value="">—</option>
+                {[4, 6, 8, 10, 12].map((n) => (
+                  <option key={n} value={String(n)}>{n}</option>
+                ))}
+              </select>
+            </div>
+            <div style={fieldGroup}>
+              <label style={labelStyle}>N° Válvulas</label>
+              <select
+                value={numeroValvulas}
+                onChange={(e) => setNumeroValvulas(e.target.value)}
+                style={selectStyle}
+              >
+                <option value="">—</option>
+                {[8, 12, 16, 20, 24].map((n) => (
+                  <option key={n} value={String(n)}>{n}</option>
+                ))}
+              </select>
+            </div>
+            <div style={fieldGroup}>
+              <label style={labelStyle}>Rectificada</label>
+              <select
+                value={rectificada === null ? "" : rectificada ? "si" : "no"}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setRectificada(v === "" ? null : v === "si");
+                }}
+                style={selectStyle}
+              >
+                <option value="">—</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
+              </select>
             </div>
           </div>
 
@@ -636,7 +693,7 @@ export default function MotorFormModal({ motor, marcas, modelos, onClose, onSave
                 fontSize: "0.95rem",
               }}
             >
-              {saving ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear motor"}
+              {saving ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear culata"}
             </button>
           </div>
         </form>

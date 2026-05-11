@@ -18,18 +18,18 @@ export default function Hero({ motores }: HeroProps) {
 
   return (
     <section className="hero">
-      <div className="hero-watermark">MOTORES</div>
+      <div className="hero-watermark">CULATAS</div>
       <div className="hero-inner">
         <div className="hero-eyebrow">
           <span></span>Inventario actualizado
         </div>
         <h1>
-          Motores de <em>calidad</em>
+          Culatas de <em>calidad</em>
           <br />
           para tu vehículo
         </h1>
         <p className="hero-sub">
-          Amplio stock de motores para autos y camionetas. Todos verificados,
+          Amplio stock de culatas para autos y camionetas. Todas verificadas,
           con garantía de procedencia.
         </p>
         <div className="hero-stats">
@@ -37,7 +37,7 @@ export default function Hero({ motores }: HeroProps) {
             <div className="stat-val">
               {totalDisponibles}<em>+</em>
             </div>
-            <div className="stat-lbl">Motores en stock</div>
+            <div className="stat-lbl">Culatas en stock</div>
           </div>
           <div className="stat-item">
             <div className="stat-val">

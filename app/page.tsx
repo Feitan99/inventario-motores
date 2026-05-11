@@ -37,6 +37,9 @@ export default function Catalog() {
         costo_compra,
         precio_venta,
         observaciones,
+        numero_cilindros,
+        numero_valvulas,
+        rectificada,
         marcas ( nombre ),
         modelos ( nombre ),
         motor_fotos ( storage_path )
@@ -58,6 +61,9 @@ export default function Catalog() {
           costo: m.costo_compra,
           precio: m.precio_venta,
           observaciones: m.observaciones || '',
+          numero_cilindros: m.numero_cilindros ?? null,
+          numero_valvulas: m.numero_valvulas ?? null,
+          rectificada: m.rectificada ?? null,
           fotos: m.motor_fotos ? m.motor_fotos.map((f: any) => {
             if (f.storage_path && f.storage_path.startsWith('http')) {
               return f.storage_path;
@@ -122,7 +128,7 @@ export default function Catalog() {
         />
         {loading ? (
           <div style={{ padding: '2rem', textAlign: 'center', width: '100%', color: 'var(--text-secondary)' }}>
-            Cargando inventario de motores...
+            Cargando inventario de culatas...
           </div>
         ) : fetchError ? (
           <div style={{

@@ -18,7 +18,7 @@ export default function MotorGrid({
     <section>
       <div className="toolbar">
         <span className="result-info">
-          Mostrando <strong>{filteredMotors.length}</strong> motores
+          Mostrando <strong>{filteredMotors.length}</strong> culatas
         </span>
         <select
           className="sort-select"
@@ -36,7 +36,7 @@ export default function MotorGrid({
         {filteredMotors.length === 0 ? (
           <div className="empty">
             <div className="empty-icon">⊘</div>
-            <p>No se encontraron motores con esos filtros.</p>
+            <p>No se encontraron culatas con esos filtros.</p>
           </div>
         ) : (
           filteredMotors.map((m, i) => (

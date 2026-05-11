@@ -1,7 +1,7 @@
-export const WA_NUMBER = "56912345678";
+export const WA_NUMBER = "56978740432";
 
 export type Motor = {
-  id: string; // Cambiado a string (UUID)
+  id: string;
   marca: string;
   modelo: string;
   tipo: string;
@@ -13,5 +13,8 @@ export type Motor = {
   precio: number;
   observaciones: string;
   fotos: string[];
+  numero_cilindros: number | null;
+  numero_valvulas: number | null;
+  rectificada: boolean | null;
 };
 

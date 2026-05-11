@@ -147,6 +147,24 @@ export default function MotorModal({ motor, onClose }: MotorModalProps) {
               <label>Precio venta</label>
               <span>{fmt(motor.precio)}</span>
             </div>
+            {motor.numero_cilindros != null && (
+              <div className="modal-field">
+                <label>Cilindros</label>
+                <span>{motor.numero_cilindros}</span>
+              </div>
+            )}
+            {motor.numero_valvulas != null && (
+              <div className="modal-field">
+                <label>Válvulas</label>
+                <span>{motor.numero_valvulas}</span>
+              </div>
+            )}
+            {motor.rectificada != null && (
+              <div className="modal-field">
+                <label>Rectificada</label>
+                <span>{motor.rectificada ? "Sí" : "No"}</span>
+              </div>
+            )}
           </div>
           {motor.observaciones && (
             <div className="modal-obs">
@@ -158,7 +176,7 @@ export default function MotorModal({ motor, onClose }: MotorModalProps) {
             <a
               className="btn-wa"
               href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
-                `Hola! Me interesa el motor ${motor.marca} ${motor.modelo} (${motor.anio}). ¿Está disponible?`
+                `Hola! Me interesa la culata ${motor.marca} ${motor.modelo} (${motor.anio}). ¿Está disponible?`
               )}`}
               target="_blank"
               rel="noreferrer"

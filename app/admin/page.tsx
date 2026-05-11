@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import MotorFormModal from "@/components/admin/MotorFormModal";
+import MarcasManager from "@/components/admin/MarcasManager";
 
 export type MotorRow = {
   id: string;
@@ -41,6 +42,7 @@ export default function AdminPage() {
   const [motores, setMotores] = useState<MotorRow[]>([]);
   const [marcas, setMarcas] = useState<Marca[]>([]);
   const [modelos, setModelos] = useState<Modelo[]>([]);
+  const [tab, setTab] = useState<"inventario" | "marcas">("inventario");
   const [formOpen, setFormOpen] = useState(false);
   const [editingMotor, setEditingMotor] = useState<MotorRow | null>(null);
   const [deletingMotor, setDeletingMotor] = useState<MotorRow | null>(null);
@@ -148,21 +150,55 @@ export default function AdminPage() {
             Panel de Administración
           </h1>
           <p style={{ margin: "0.25rem 0 0", color: "var(--text2)", fontSize: "0.9rem" }}>
-            {loading ? "Cargando..." : `${motores.length} motor${motores.length !== 1 ? "es" : ""} en inventario`}
+            {loading ? "Cargando..." : `${motores.length} culata${motores.length !== 1 ? "s" : ""} en inventario`}
           </p>
         </div>
         <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
-          <button onClick={openCreate} style={btnPrimaryStyle}>
-            + Agregar motor
-          </button>
+          {tab === "inventario" && (
+            <button onClick={openCreate} style={btnPrimaryStyle}>
+              + Agregar culata
+            </button>
+          )}
           <button onClick={handleLogout} style={btnGhostStyle}>
             Cerrar sesión
           </button>
         </div>
       </div>
 
+      {/* Tabs */}
+      <div style={{ display: "flex", gap: "0.25rem", borderBottom: "1px solid var(--border)", marginBottom: "1.5rem" }}>
+        {(["inventario", "marcas"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            style={{
+              padding: "0.6rem 1.2rem",
+              background: "transparent",
+              border: "none",
+              borderBottom: tab === t ? "2px solid var(--accent)" : "2px solid transparent",
+              color: tab === t ? "var(--text)" : "var(--text2)",
+              fontWeight: tab === t ? 600 : 400,
+              fontFamily: "var(--font-barlow)",
+              fontSize: "0.9rem",
+              cursor: "pointer",
+              textTransform: "capitalize",
+              marginBottom: "-1px",
+            }}
+          >
+            {t === "inventario" ? "Inventario" : "Marcas y Modelos"}
+          </button>
+        ))}
+      </div>
+
       {/* Table */}
-      {loading ? (
+      {tab === "marcas" ? (
+        <MarcasManager
+          marcas={marcas}
+          modelos={modelos}
+          motores={motores}
+          onRefresh={fetchData}
+        />
+      ) : loading ? (
         <div style={{ textAlign: "center", color: "var(--text2)", padding: "4rem" }}>
           Cargando inventario...
         </div>
@@ -277,8 +313,8 @@ export default function AdminPage() {
                       color: "var(--text2)",
                     }}
                   >
-                    No hay motores. Usá el botón{" "}
-                    <strong style={{ color: "var(--accent)" }}>+ Agregar motor</strong> para
+                    No hay culatas. Usá el botón{" "}
+                    <strong style={{ color: "var(--accent)" }}>+ Agregar culata</strong> para
                     comenzar.
                   </td>
                 </tr>
@@ -319,7 +355,7 @@ export default function AdminPage() {
                 fontSize: "1.3rem",
               }}
             >
-              ¿Eliminar este motor?
+              ¿Eliminar esta culata?
             </h3>
             <p style={{ margin: "0 0 0.25rem", fontWeight: 600 }}>
               {deletingMotor.marcas?.nombre} {deletingMotor.modelos?.nombre} ({deletingMotor.anio})
@@ -331,7 +367,7 @@ export default function AdminPage() {
                 fontSize: "0.875rem",
               }}
             >
-              Esta acción es irreversible. Se eliminarán el motor y todas sus fotos.
+              Esta acción es irreversible. Se eliminarán la culata y todas sus fotos.
             </p>
             <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
               <button

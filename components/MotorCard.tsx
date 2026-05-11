@@ -15,7 +15,7 @@ export default function MotorCard({ motor, index, onOpenModal }: MotorCardProps)
   const isSold = motor.estado === "Vendido";
   const badgeCls = `badge-${motor.estado.toLowerCase()}`;
   const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
-    `Hola! Me interesa el motor ${motor.marca} ${motor.modelo} (${motor.anio}). ¿Está disponible?`
+    `Hola! Me interesa la culata ${motor.marca} ${motor.modelo} (${motor.anio}). ¿Está disponible?`
   )}`;
   const validFotos = motor.fotos ? motor.fotos.filter(f => f && f.trim() !== "") : [];
 
@@ -58,15 +58,24 @@ export default function MotorCard({ motor, index, onOpenModal }: MotorCardProps)
           </div>
         )}
         <span className={`card-badge ${badgeCls}`}>{motor.estado}</span>
-        <span className="card-tipo">{motor.tipo}</span>
       </div>
       <div className="card-body">
         <div className="card-make">{motor.marca}</div>
         <div className="card-model">{motor.modelo}</div>
         <div className="card-meta">
+          <span className="meta-pill pill-tipo">{motor.tipo}</span>
           <span className="meta-pill">{motor.anio}</span>
           <span className="meta-pill">{motor.ubicacion}</span>
           <span className="meta-pill">N° {motor.nro_serie}</span>
+          {motor.numero_cilindros != null && (
+            <span className="meta-pill">{motor.numero_cilindros} cil.</span>
+          )}
+          {motor.numero_valvulas != null && (
+            <span className="meta-pill">{motor.numero_valvulas} vál.</span>
+          )}
+          {motor.rectificada != null && (
+            <span className="meta-pill">{motor.rectificada ? "Rectificada" : "Sin rectificar"}</span>
+          )}
         </div>
         <div className="card-price">
           {fmt(motor.precio)}
